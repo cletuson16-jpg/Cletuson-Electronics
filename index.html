@@ -385,7 +385,7 @@ function authView(){
       <label>Confirm PIN</label><input id="p2" type="password" inputmode="numeric" maxlength="4" placeholder="••••">
       <label>Security question</label><select id="sqs">${QS.map(q=>'<option>'+q+'</option>').join('')}</select>
       <label>Your answer</label><input id="sa" autocomplete="off" placeholder="Answer">`
-      :`${(rsv&&rsv!==(acct.rsDone||0))?'<div class="sub" style="margin-bottom:10px;color:var(--ac)">PIN reset was allowed. Enter a new 4-digit PIN.</div><label>New PIN</label><input id="p1" type="password" inputmode="numeric" maxlength="4" placeholder="••••"><label>Confirm PIN</label><input id="p2" type="password" inputmode="numeric" maxlength="4" placeholder="••••">':`<p class="sub" style="margin:0 0 12px">Hello, <b>${esc(acct.name)}</b></p><label>Enter your 4-digit PIN</label><input id="p1" type="password" inputmode="numeric" maxlength="4" placeholder="••••" autofocus>`}
+      :`${(rsv&&rsv!==(acct.rsDone||0))?'<div class="sub" style="margin-bottom:10px;color:var(--ac)">PIN reset was allowed. Enter a new 4-digit PIN.</div><label>New PIN</label><input id="p1" type="password" inputmode="numeric" maxlength="4" placeholder="••••"><label>Confirm PIN</label><input id="p2" type="password" inputmode="numeric" maxlength="4" placeholder="••••">':`<p class="sub" style="margin:0 0 12px">Hello, <b>${esc(acct.name)}</b></p><label>Enter your 4-digit PIN</label><input id="p1" type="password" inputmode="numeric" maxlength="4" placeholder="••••" autofocus>`}`}
       <div class="err" id="er"></div>
       <button id="go" style="width:100%;margin-top:8px">${signup?'Sign up':((rsv&&rsv!==(acct.rsDone||0))?'Save new PIN':'Unlock')}</button>
       ${!signup?`<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><button class="g" id="rq" style="flex:1">Forgot PIN</button><button class="g" id="rs" style="flex:1">Remove account</button></div><div class="sub" id="rqm" style="margin-top:8px"></div>`:''}
@@ -430,7 +430,7 @@ function authView(){
       const n=($('#nm').value||'').trim(),id=($('#idv').value||'').trim(),a=$('#p1').value,b=$('#p2').value;
       if(n.length<2)return e.textContent='Enter your name.';
       if(id.length<3)return e.textContent='Enter a valid '+method+'.';
-      if(!/^\\d{4}$/.test(a))return e.textContent='PIN must be 4 digits.';
+      if(!/^\d{4}$/.test(a))return e.textContent='PIN must be 4 digits.';
       if(a!==b)return e.textContent='PINs do not match.';
       const an=($('#sa').value||'').trim().toLowerCase();if(an.length<2)return e.textContent='Enter your security answer.';
       acct={name:n,method,id,pin:hash(a),q:$('#sqs').value,ah:hash(an),at:Date.now()};
@@ -441,7 +441,7 @@ function authView(){
     }
     if($('#p2')){
       const a=$('#p1').value,b=$('#p2').value;
-      if(!/^\\d{4}$/.test(a))return e.textContent='PIN must be 4 digits.';
+      if(!/^\d{4}$/.test(a))return e.textContent='PIN must be 4 digits.';
       if(a!==b)return e.textContent='PINs do not match.';
       acct.pin=hash(a);acct.rsDone=rsv;ls.set('cea_acct',JSON.stringify(acct));fails=0;locked=false;saveUnlock();mainView();return;
     }
