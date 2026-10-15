@@ -1,0 +1,62 @@
+
+name: Build Cletuson Electronics APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get project files
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Prepare web app
+        run: |
+          mkdir -p www
+          cp index.html www/
+          for f in manifest.json sw.js icon-192.png icon-512.png cletus-portrait.jpg shop-team.jpg photos; do
+            if [ -e "$f" ]; then cp -r "$f" www/; fi
+          done
+          npm init -y
+          npm install @capacitor/core @capacitor/cli @capacitor/android
+
+      - name: Configure Capacitor
+        run: |
+          cat > capacitor.config.json <<'EOF'
+          {
+            "appId": "com.cletuson.electronics",
+            "appName": "Cletuson Electronics",
+            "webDir": "www"
+          }
+          EOF
+          npx cap add android
+          npx cap sync android
+
+      - name: Build Android APK
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Save APK for download
+        uses: actions/upload-artifact@v4
+        with:
+          name: Cletuson-Electronics-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          
